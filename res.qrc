@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/lol001.png</file>
+        <file>res/lolally.png</file>
+        <file>res/lolenemy.png</file>
+        <file>res/lolme.png</file>
+        <file>res/lolkeg.png</file>
+    </qresource>
+</RCC>
