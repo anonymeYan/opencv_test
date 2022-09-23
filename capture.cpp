@@ -43,7 +43,36 @@ void Harris_Demo(int, void *) {
 
 capture::capture(QObject *parent):QObject (parent)
 {
+    HMODULE hDll = LoadLibraryW(L"D:\\Qt\\DDHID64.dll");
+    if (hDll == nullptr)
+    {
+        qDebug() << "ERROR:-1";
+        return ;
+    }
 
+    DD_btn = (pDD_btn)GetProcAddress(hDll, "DD_btn");
+    DD_whl = (pDD_whl)GetProcAddress(hDll, "DD_whl");
+    DD_key = (pDD_key)GetProcAddress(hDll, "DD_key");
+    DD_mov = (pDD_mov)GetProcAddress(hDll, "DD_mov");
+    DD_str = (pDD_str)GetProcAddress(hDll, "DD_str");
+    DD_todc = (pDD_todc)GetProcAddress(hDll, "DD_todc");
+    DD_movR = (pDD_movR)GetProcAddress(hDll, "DD_movR");
+
+    if (!(DD_btn && DD_whl && DD_key && DD_mov && DD_str  && DD_todc && DD_movR))
+    {
+        qDebug() << "ERROR:-2";
+        return ;
+    }
+
+    int st = DD_btn(0);
+    if (st != 1)
+    {
+        //DD Initialize Error
+        qDebug() << "ERROR:"<<st;
+        return ;
+    }
+
+    qDebug()  << "DD load success!";
 }
 
 void capture::working()
@@ -298,25 +327,27 @@ void capture::TMultiMatch()
             //3*3邻域非极大值抑制
             if (val > thresh)
             {
-                //当前像素的灰度值大于阈值且该像素是其3*3邻域最大值时，判定其为目标
-                if (result.at<float>(i - 1, j - 1) < val &&
-                        result.at<float>(i - 1, j) < val &&
-                        result.at<float>(i - 1, j + 1) < val &&
-                        result.at<float>(i, j - 1) < val &&
-                        result.at<float>(i, j + 1) < val &&
-                        result.at<float>(i + 1, j - 1) < val &&
-                        result.at<float>(i + 1, j) < val &&
-                        result.at<float>(i + 1, j + 1) < val)
-                {
-                    qDebug()<<"result="<<val;
-                    qDebug()<<"(x="<<j<<",y="<<i<<")";
-                    //结果绘制
-                    rectangle(src, Rect(j, i, temp.cols, temp.rows),Scalar(0, 255, 0), 2);
+                if(i!=0 && j!=0 && i!=(result.rows-1) && j!=(result.cols-1)){
+                    //当前像素的灰度值大于阈值且该像素是其3*3邻域最大值时，判定其为目标
+                    if (result.at<float>(i - 1, j - 1) < val &&
+                            result.at<float>(i - 1, j) < val &&
+                            result.at<float>(i - 1, j + 1) < val &&
+                            result.at<float>(i, j - 1) < val &&
+                            result.at<float>(i, j + 1) < val &&
+                            result.at<float>(i + 1, j - 1) < val &&
+                            result.at<float>(i + 1, j) < val &&
+                            result.at<float>(i + 1, j + 1) < val)
+                    {
+                        qDebug()<<"result="<<val;
+                        qDebug()<<"(x="<<j<<",y="<<i<<")";
+                        //结果绘制
+                        rectangle(src, Rect(j, i, temp.cols, temp.rows),Scalar(0, 255, 0), 2);
 
-                    char text[10];
-                    float score = result.at<float>(i, j);
-                    sprintf_s(text, "%.2f",score);
-                    putText(src, text, Point(j, i), FONT_HERSHEY_SIMPLEX, 0.8, Scalar(0, 0, 255), 2);
+                        char text[10];
+                        float score = result.at<float>(i, j);
+                        sprintf_s(text, "%.2f",score);
+                        putText(src, text, Point(j, i), FONT_HERSHEY_SIMPLEX, 0.8, Scalar(0, 0, 255), 2);
+                    }
                 }
             }
         }
@@ -767,6 +798,105 @@ void capture::OrbFlann()
 
     imshow("result", img2);
     waitKey(0);
+}
+
+
+
+void capture::GpKeg()
+{
+    qDebug() <<"GpKeg start";
+    while(1)
+    {
+        short flag = GetKeyState(Qt::Key_2);
+        qDebug()<<flag;
+        if(flag<0){
+            GpDetc();
+        }
+    }
+}
+
+
+void capture::GpDetc()
+{
+    HWND hwnd = GetDesktopWindow();
+    Mat screen = captureScreenMat(hwnd);
+    if(screen.empty()){
+        return  ;
+    }
+    cv::Mat src = screen;
+    cv::Mat temp = imread("F:\\CODE_PROJECT\\opencv001\\res\\lolkeg.png");
+    if(temp.empty()){
+        qDebug() <<"sample is empty";
+        return  ;
+    }
+    Mat src_gray, src_gaussian;
+    cvtColor(src, src_gray, COLOR_BGR2GRAY);
+    GaussianBlur(src_gray, src_gaussian, Size(3, 3), 0);
+
+    Mat temp_gray, temp_gaussian;
+    cvtColor(temp, temp_gray, COLOR_BGR2GRAY);
+    GaussianBlur(temp_gray, temp_gaussian, Size(3, 3), 0);
+
+    Mat result;
+    matchTemplate(src_gaussian, temp_gaussian, result, TM_CCOEFF_NORMED);
+    normalize(result, result, 0, 1, NORM_MINMAX);
+    qDebug()<<"(src_gaussian_x="<<src_gaussian.cols<<",src_gaussian_y="<<src_gaussian.rows<<")";
+    qDebug()<<"(result_x="<<result.cols<<",result_y="<<result.rows<<")";
+    qDebug()<<"(temp_x="<<temp.cols<<",temp_y="<<temp.rows<<")";
+
+    double minVal, maxVal;
+    Point minLoc, maxLoc;
+    minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
+    qDebug()<<"maxVal"<<maxVal;
+    qDebug()<<"maxLoc("<<maxLoc.x << ","<<maxLoc.y<<")";
+
+    std::vector<Point> goodMatchs;
+    for (int i = 0; i < result.rows; i++)
+    {
+        for (int j = 0; j < result.cols; j++)
+        {
+            double val = result.at<float>(i, j);//
+            if(i!=0 && j!=0 && i!=(result.rows-1) && j!=(result.cols-1)){
+                //3*3邻域非极大值抑制
+                if (val > 0.85)
+                {
+                    //当前像素的灰度值大于阈值且该像素是其3*3邻域最大值时，判定其为目标
+                    if (result.at<float>(i - 1, j - 1) < val &&
+                            result.at<float>(i - 1, j) < val &&
+                            result.at<float>(i - 1, j + 1) < val &&
+                            result.at<float>(i, j - 1) < val &&
+                            result.at<float>(i, j + 1) < val &&
+                            result.at<float>(i + 1, j - 1) < val &&
+                            result.at<float>(i + 1, j) < val &&
+                            result.at<float>(i + 1, j + 1) < val)
+                    {
+                        goodMatchs.push_back(Point(j,i));
+                        qDebug()<<"result="<<val;
+                        //结果绘制
+                        rectangle(src, Rect(j, i, temp.cols, temp.rows),Scalar(0, 255, 0), 2);
+                        char text[10];
+                        float score = result.at<float>(i, j);
+                        sprintf_s(text, "%.2f",score);
+                        putText(src, text, Point(j, i), FONT_HERSHEY_SIMPLEX, 0.8, Scalar(0, 0, 255), 2);
+                    }
+                }
+            }
+        }
+    }
+    qDebug()<<"goodMatchs="<<goodMatchs.size();
+
+    if(goodMatchs.size()<10){
+        for (int i=0;i<goodMatchs.size();i++) {
+            qDebug()<<"(x="<<goodMatchs.at(i).x<<",y="<<goodMatchs.at(i).y<<")";
+            DD_mov(goodMatchs.at(i).x+44,goodMatchs.at(i).y+46);
+            DD_key(400,1);
+            Sleep(50);
+            DD_key(400,2);
+            QEventLoop loop;//定义一个新的事件循环
+            QTimer::singleShot(1000, &loop, SLOT(quit()));//创建单次定时器，槽函数为事件循环的退出函数
+            loop.exec();//事件循环开始执行，程序会卡在这里，直到定时时间到，本循环被退出
+        }
+    }
 }
 
 
