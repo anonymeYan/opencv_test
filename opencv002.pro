@@ -11,7 +11,7 @@ LIBS += -luser32
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = opencv001
+TARGET = opencv002
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -44,25 +44,20 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -LD:/Qt/opencv/build/x64/vc15/lib/ -lopencv_world454
-else:win32:CONFIG(debug, debug|release): LIBS += -LD:/Qt/opencv/build/x64/vc15/lib/ -lopencv_world454d
-else:unix: LIBS += -LD:/Qt/opencv/build/x64/vc15/lib/ -lopencv_world454
 
-INCLUDEPATH += D:/Qt/opencv/build/include
-DEPENDPATH += D:/Qt/opencv/build/include
 
 RESOURCES += \
     res.qrc
 
 
 
-win32:CONFIG(release, debug|release): LIBS += -LD:/Qt/opencv/build/x64/vc15/lib/ -lopencv_world454
-else:win32:CONFIG(debug, debug|release): LIBS += -LD:/Qt/opencv/build/x64/vc15/lib/ -lopencv_world454d
-else:unix: LIBS += -LD:/Qt/opencv/build/x64/vc15/lib/ -lopencv_world454
-
-INCLUDEPATH += D:/Qt/opencv/build/include
-DEPENDPATH += D:/Qt/opencv/build/include
 
 
 
 
+win32:CONFIG(release, debug|release): LIBS += -LD:/Qt/newbuild/install/x64/vc15/lib/ -lopencv_world454
+else:win32:CONFIG(debug, debug|release): LIBS += -LD:/Qt/newbuild/install/x64/vc15/lib/ -lopencv_world454d
+else:unix: LIBS += -LD:/Qt/newbuild/install/x64/vc15/lib/ -lopencv_world454
+
+INCLUDEPATH += D:/Qt/newbuild/install/include
+DEPENDPATH += D:/Qt/newbuild/install/include

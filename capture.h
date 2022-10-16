@@ -8,13 +8,19 @@
 #include "opencv2/core.hpp"
 #include "opencv2/core/mat.inl.hpp"
 
+#include "opencv2/xfeatures2d.hpp"
+#include "opencv2/xfeatures2d/nonfree.hpp"
+
+
 #include <Windows.h>
 #include "qfiledialog.h"
 #include "qimage.h"
 #include "qdebug.h"
 #include "qthread.h"
 #include "qtimer.h"
+#include "QTime"
 #include "qeventloop.h"
+#include "QtMath"
 
 
 
@@ -43,16 +49,33 @@ public:
     void orbDetection();
     void BfMatch();
     void FlannMatch();
-
-    void TMatch();
-    void TMultiMatch();
     void SiftBf();
     void SiftFlann();
+    void surfFlann();
     void orbBf();
     void OrbFlann();
 
+    void preWork();
+    void colorDetc();
+
+    void TMatch();
+    void TMultiMatch();
+
+    QPoint calSecondKeg(const QPoint& pt1,const QPoint& pt2);
+    QPoint calSecondKeg1(const QPoint& pt1,const QPoint& pt2);
+    void calDistance(const QPoint& pt1,const QPoint& pt2);
+    void Gp();
     void GpKeg();
-    void GpDetc();
+    void GpEnemy();
+    void GpTest();
+    void GpDetcSiftFlann();
+    void GpDetcSurfFlann();
+
+
+    void enemyMatch();
+
+    void tsMatch();
+
 
     pDD_btn      DD_btn;          //Mouse button
     pDD_whl      DD_whl;		     //Mouse wheel
@@ -74,7 +97,10 @@ private:
 
     Mat capMat;
 
-
+    Mat keg;
+    Ptr<xfeatures2d::SURF> surf_detector;
+    std::vector<KeyPoint> keg_kp;
+    Mat keg_des;
 };
 
 #endif // CAPTURE_H

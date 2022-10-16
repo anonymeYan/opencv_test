@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>798</width>
-    <height>489</height>
+    <height>547</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,6 +43,13 @@
         <widget class="QPushButton" name="pushButton_5">
          <property name="text">
           <string>SIFT </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_18">
+         <property name="text">
+          <string>SURF</string>
          </property>
         </widget>
        </item>
@@ -103,6 +110,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButton_17">
+         <property name="text">
+          <string>surfFlann找图</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="pushButton_13">
          <property name="text">
           <string>orbBf找图</string>
@@ -121,7 +135,7 @@
     </item>
     <item>
      <widget class="QWidget" name="widget_2" native="true">
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,10,1">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,5,0,0,0,0,5,0,1">
        <item>
         <widget class="QPushButton" name="pushButton_15">
          <property name="text">
@@ -131,6 +145,54 @@
        </item>
        <item>
         <widget class="QTextEdit" name="textEdit_press"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_20">
+         <property name="text">
+          <string>预处理</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_22">
+         <property name="text">
+          <string>颜色过滤</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_23">
+         <property name="text">
+          <string>角度测试</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_21">
+         <property name="text">
+          <string>模板+特征</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_19">
+         <property name="text">
+          <string>敌人匹配</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_16">

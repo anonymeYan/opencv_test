@@ -30,7 +30,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_12,&QPushButton::clicked,cap,&capture::SiftBf);
     connect(ui->pushButton_13,&QPushButton::clicked,cap,&capture::orbBf);
     connect(ui->pushButton_14,&QPushButton::clicked,cap,&capture::TMultiMatch);
-    connect(ui->pushButton_16,&QPushButton::clicked,cap,&capture::GpKeg);
+    connect(ui->pushButton_16,&QPushButton::clicked,cap,&capture::Gp);
+    connect(ui->pushButton_17,&QPushButton::clicked,cap,&capture::surfFlann);
+    connect(ui->pushButton_18,&QPushButton::clicked,cap,&capture::surfDetection);
+    connect(ui->pushButton_19,&QPushButton::clicked,cap,&capture::enemyMatch);
+    connect(ui->pushButton_20,&QPushButton::clicked,cap,&capture::preWork);
+    connect(ui->pushButton_21,&QPushButton::clicked,cap,&capture::tsMatch);
+    connect(ui->pushButton_22,&QPushButton::clicked,cap,&capture::colorDetc);
+    connect(ui->pushButton_23,&QPushButton::clicked,cap,&capture::GpTest);
     connect(this,SIGNAL(sendMat(const Mat&)),cap,SLOT(sendMatSlot(const Mat&)));
     connect(cap,SIGNAL(imageChanged(const Mat&)),this,SLOT(imageChangedSlot(const Mat&)));
 }
